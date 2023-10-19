@@ -10,8 +10,8 @@ if ! ~/bin/crc ip ; then
 
     #go get crc if it isn't downloaded
     echo "downloading crc"
-    test -f "crc-linux-amd64.tar.xz" || curl -O -sS  \
-        "https://mirror.openshift.com/pub/openshift-v4/clients/crc/latest/crc-linux-amd64.tar.xz"
+    test -f "crc-linux-amd64.tar.xz" || curl -O -L -sS  \
+        "https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/crc/latest/crc-linux-amd64.tar.xz"
 
     #extract crc
     echo "extracting crc"
@@ -26,7 +26,10 @@ if ! ~/bin/crc ip ; then
 
     #run crc setup if it hasn't been done
     echo "running crc setup"
-    ~/bin/crc setup
+    until ~/bin/crc setup
+    do
+        echo "Retrying..."
+    done
 
     #run crc start directly (which will just say "done already" not error if running)
     #crc start -p ~/pull-secret > $CRC_LOG_FILE 2>&1

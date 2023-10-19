@@ -32,37 +32,37 @@ semanage port -a -t http_port_t -p tcp 6443
 
 cat << EOF > /etc/haproxy/haproxy.cfg
 global
-debug
+
 
 defaults
-log global
-mode http
-timeout connect 0
-timeout client 0
-timeout server 0
+  log global
+  mode http
+  timeout connect 0
+  timeout client 0
+  timeout server 0
 
 frontend apps
-bind :80
-bind :443
-option tcplog
-mode tcp
-default_backend apps
+  bind :80
+  bind :443
+  option tcplog
+  mode tcp
+  default_backend apps
 
 backend apps
-mode tcp
-balance roundrobin
-server webserver1 $CRC_IP
+  mode tcp
+  balance roundrobin
+  server webserver1 $CRC_IP
 
 frontend api
-bind :6443
-option tcplog
-mode tcp
-default_backend api
+  bind :6443
+  option tcplog
+  mode tcp
+  default_backend api
 
 backend api
-mode tcp
-balance roundrobin
-server webserver1 $CRC_IP:6443
+  mode tcp
+  balance roundrobin
+  server webserver1 $CRC_IP:6443
 EOF
 
 systemctl stop haproxy || :

@@ -1,9 +1,11 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "fedora/32-cloud-base"
+  config.vm.box = "fedora/38-cloud-base"
   config.vm.provider :libvirt do |domain|
     domain.cpus = 4
     domain.memory = 16384
     domain.machine_virtual_size = 100
+    domain.management_network_name = 'default'
+    domain.management_network_address = '192.168.122.0/24'
   end
   config.vm.define :vagrant_crc do |vagrant_host|
     vagrant_host.vm.hostname = "vagrant-crc.fishjump.com"
@@ -12,13 +14,13 @@ Vagrant.configure("2") do |config|
     # this will create one in addition to the private one
     # the macvtap address won't be addressable from the host, that's why
     # you need two
-    vagrant_host.vm.network "public_network", dev: "eno1", mode: "bridge"
+    vagrant_host.vm.network "public_network", dev: "enp7s0", mode: "bridge"
 
     #take advantage of our new disk size
     vagrant_host.vm.provision "shell", privileged: true, inline: \
-      "echo -e \"yes\n100%\" | parted /dev/vda ---pretend-input-tty unit % resizepart 1 "
+      "echo -e \"unit\n%\nresizepart\nFix\n5\nyes\n100%\" | parted /dev/vda ---pretend-input-tty"
     vagrant_host.vm.provision "shell", privileged: true, inline: \
-      "resize2fs /dev/vda1"
+      "btrfs filesystem resize max /"
 
     #prepare for attaching from remote
     vagrant_host.vm.provision "file", source: "./configure-remote.sh", destination: "configure-remote.sh"
