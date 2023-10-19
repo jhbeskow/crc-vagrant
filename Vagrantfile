@@ -30,11 +30,16 @@ Vagrant.configure("2") do |config|
 
     #get crc going
     vagrant_host.vm.provision "file", source: "./pull-secret", destination: "pull-secret"
-    vagrant_host.vm.provision "file", source: "./setup-run-crc.sh", destination: "setup-run-crc.sh"
+    vagrant_host.vm.provision "file", source: "./setup-crc.sh", destination: "setup-crc.sh"
+    vagrant_host.vm.provision "file", source: "./run-crc.sh", destination: "run-crc.sh"
     vagrant_host.vm.provision "shell", privileged: false, inline: \
-      "chmod u+x ~/setup-run-crc.sh"
+      "chmod u+x ~/setup-crc.sh"
     vagrant_host.vm.provision "shell", privileged: false, inline: \
-      "~/setup-run-crc.sh"
+      "chmod u+x ~/run-crc.sh"
+    vagrant_host.vm.provision "shell", privileged: false, inline: \
+      "~/setup-crc.sh"
+    vagrant_host.vm.provision "shell", privileged: false, inline: \
+      "~/run-crc.sh", run: 'always'
   end
 end
 
