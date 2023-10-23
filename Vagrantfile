@@ -2,7 +2,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "fedora/38-cloud-base"
   config.vm.provider :libvirt do |domain|
     domain.cpus = 4
-    domain.memory = 16384
+    domain.memory = 20972
     domain.machine_virtual_size = 100
     domain.management_network_name = 'default'
     domain.management_network_address = '192.168.122.0/24'
@@ -31,11 +31,11 @@ Vagrant.configure("2") do |config|
     #get crc going
     vagrant_host.vm.provision "file", source: "./pull-secret", destination: "pull-secret"
     vagrant_host.vm.provision "file", source: "./setup-crc.sh", destination: "setup-crc.sh"
-    vagrant_host.vm.provision "file", source: "./run-crc.sh", destination: "run-crc.sh"
+    vagrant_host.vm.provision "file", source: "./run-crc.sh", destination: "run-crc.sh", run: 'always'
     vagrant_host.vm.provision "shell", privileged: false, inline: \
       "chmod u+x ~/setup-crc.sh"
     vagrant_host.vm.provision "shell", privileged: false, inline: \
-      "chmod u+x ~/run-crc.sh"
+      "chmod u+x ~/run-crc.sh", run: 'always'
     vagrant_host.vm.provision "shell", privileged: false, inline: \
       "~/setup-crc.sh"
     vagrant_host.vm.provision "shell", privileged: false, inline: \
